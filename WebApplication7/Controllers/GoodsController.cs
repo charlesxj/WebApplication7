@@ -14,6 +14,18 @@ namespace WebApplication7.Controllers
         {
 
             int pageindex = int.Parse(System.Web.HttpContext.Current.Request.Params["pageindex"]);
+            if (pageindex==-1)
+            {
+                var temp = System.Web.HttpContext.Current.Request.Params["ids"];
+                string[] tlist = temp.Split(',');
+                List<int> tt = new List<int>();
+                foreach (var item in tlist)
+                {
+                    tt.Add(int.Parse(item));
+                }
+                
+                return Json(new { stauts = 0, message = Goods.GetGoods().Where(a => tt.Contains(a.id)) });
+            }
 
             return Json(new { stauts = 0, message = Goods.GetGoods().Skip((pageindex - 1) * 10).Take(10) });
         }
@@ -22,11 +34,12 @@ namespace WebApplication7.Controllers
         public object Get(int id)
         {
             var temp = GoodDetail.GetGoodDetail().FirstOrDefault(a => a.id == id);
+            var detail = Goods.GetGoods().FirstOrDefault(a => a.id == id);
             if (temp==null)
             {
                 return Json(new { stauts = 1, message ="未找到" });
             }
-            return Json(new { stauts = 0, message =new {title=Goods.GetGoods().FirstOrDefault(a=>a.id==id).title,content=temp.content }  });
+            return Json(new { stauts = 0, message =new {title= detail.title,content=temp.content,market_price= detail.market_price,detail.sell_price,detail.add_time,detail.goods_no,detail.stock_quantity }  });
         }
 
         // POST: api/Goods
@@ -63,18 +76,21 @@ namespace WebApplication7.Controllers
 
         public int stock_quantity { get; set; }
 
+        public string goods_no { get; set; }
+        
+
         public static List<Goods> GetGoods()
         {
             return new List<Goods>()
             {
-                new Goods(){id=1,subid=1, img_url="https://img10.360buyimg.com/n1/s450x450_jfs/t1/16130/39/12690/305219/5caac12aEbb843fa5/ce6c1dee969fb626.jpg", add_time=DateTime.Now,click=12, title="小米9 4800万超广角三摄 8GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待", zhaiyao="现货速发【小米官方授权店，直供货源】【下单好礼】一拖三数据线+耳机+吃鸡神器+高清膜+20元红包【骁龙855旗舰处理器，后置三摄智能游戏手机】", market_price=3299, sell_price=3177, stock_quantity=12 },
-                new Goods(){id=2,subid=2, img_url="https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/34035/40/4769/95681/5cb83cf9E1c52fc02/13a29cecb97cd4ab.jpg!q80.dpg.webp", add_time=DateTime.Now.AddDays(-1),click=12,title="OPPO Reno 全面屏拍照手机 6G+256G 雾海绿 全网通 移动联通电信 双卡双待手机", zhaiyao="关注Reno新品首发，享12期免息+N6蓝牙音箱+京东180天只换不修服务，隐藏式摄像头，4800万像素，闪充3.0，屏下指纹",market_price=3000, sell_price=2900, stock_quantity=12 },
-                new Goods(){id=3,subid=3, img_url="https://img14.360buyimg.com/imgzone/jfs/t28270/235/442258107/141730/32d3d65b/5bf3b609Nfc07ff49.jpg!q70.dpg", add_time=DateTime.Now.AddDays(-2),click=12,title="小米（MI） mix3 【白条分期0首付6期免息】 磁动力滑盖全面屏全网通手机 黑色 白条分期 8GB+128GB", zhaiyao="【京东物流.全国联保】【下单送礼：时尚音乐耳机、指环扣、保护壳】【白条分期0首付6期免息】",market_price=3699, sell_price=3599, stock_quantity=12 },
-                new Goods(){id=4,subid=4, img_url="http://fuss10.elemecdn.com/7/85/e478e4b26af74f4539c79f31fde80jpeg.jpeg", add_time=DateTime.Now.AddDays(-3),click=12,title="啊手动阀", zhaiyao="123",market_price=3000, sell_price=2900, stock_quantity=12 },
-                new Goods(){id=30,subid=30, img_url="http://fuss10.elemecdn.com/b/df/b630636b444346e38cef6c59f6457jpeg.jpeg", add_time=DateTime.Now.AddDays(-4),click=12,title="阿道夫", zhaiyao="美食，顾名思义就是美味的食物，贵的有山珍海味，便宜的有街边小吃。其实美食是不分贵贱的，只要是自己喜欢的，都可以称之为美食。中国素有“烹饪王国”这个美誉。在中国这个大家庭里，我们有五十六个小家庭，每个家庭都有自己的特色美食。美食吃前有期待、吃后有回味，已不仅仅是简单的味觉感受，更是一种精神享受。享受美食也要看场合，场合好美食吃起来才有味道。世界各地美食文化博大精深，营养物质各不相同，品味更多美食，享受更多健康，也让人吃的更加开心。美食不仅仅是餐桌上的食物。还包括休闲零食、各种饼干、糕点、糖类，蜜饯、干果、肉制食品、茶饮冲泡等制品，各有各的风味，都可称之为美食。",market_price=3000, sell_price=2900, stock_quantity=12 },
-                new Goods(){id=5,subid=5, img_url="http://fuss10.elemecdn.com/7/a5/596ab03934612236f807b92906fd8jpeg.jpeg", add_time=DateTime.Now.AddDays(-5),click=12,title="啊手动阀", zhaiyao="123",market_price=3000, sell_price=2900, stock_quantity=12 },
-                new Goods(){id=6,subid=6, img_url="https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3207781657,3460758070&fm=26&gp=0.jpg", add_time=DateTime.Now.AddDays(-6),click=12,title="爱的色放撒旦", zhaiyao="12321",market_price=3000, sell_price=2900, stock_quantity=12 },
-                new Goods(){id=7,subid=7, img_url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1555588770027&di=bf94f5254006955a220806fd24ec270a&imgtype=0&src=http%3A%2F%2Fimg.bimg.126.net%2Fphoto%2FWgjcTIco7s4BN2OcRNAe_A%3D%3D%2F884675851802636535.jpg", add_time=DateTime.Now.AddDays(-1),click=12,title="阿斯蒂芬撒", zhaiyao="1231",market_price=3000, sell_price=2900, stock_quantity=12 },
+                new Goods(){id=1,subid=1, img_url="https://img10.360buyimg.com/n1/s450x450_jfs/t1/16130/39/12690/305219/5caac12aEbb843fa5/ce6c1dee969fb626.jpg", add_time=DateTime.Now,click=12, title="小米9 4800万超广角三摄 8GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待", zhaiyao="现货速发【小米官方授权店，直供货源】【下单好礼】一拖三数据线+耳机+吃鸡神器+高清膜+20元红包【骁龙855旗舰处理器，后置三摄智能游戏手机】", market_price=3299, sell_price=3177, stock_quantity=12,goods_no="100003434260" },
+                new Goods(){id=2,subid=2, img_url="https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/34035/40/4769/95681/5cb83cf9E1c52fc02/13a29cecb97cd4ab.jpg!q80.dpg.webp", add_time=DateTime.Now.AddDays(-1),click=12,title="OPPO Reno 全面屏拍照手机 6G+256G 雾海绿 全网通 移动联通电信 双卡双待手机", zhaiyao="关注Reno新品首发，享12期免息+N6蓝牙音箱+京东180天只换不修服务，隐藏式摄像头，4800万像素，闪充3.0，屏下指纹",market_price=3000, sell_price=2900, stock_quantity=12,goods_no="330003434260" },
+                new Goods(){id=3,subid=3, img_url="https://img14.360buyimg.com/imgzone/jfs/t28270/235/442258107/141730/32d3d65b/5bf3b609Nfc07ff49.jpg!q70.dpg", add_time=DateTime.Now.AddDays(-2),click=12,title="小米（MI） mix3 【白条分期0首付6期免息】 磁动力滑盖全面屏全网通手机 黑色 白条分期 8GB+128GB", zhaiyao="【京东物流.全国联保】【下单送礼：时尚音乐耳机、指环扣、保护壳】【白条分期0首付6期免息】",market_price=3699, sell_price=3599, stock_quantity=12,goods_no="444003434260" },
+                new Goods(){id=4,subid=4, img_url="http://fuss10.elemecdn.com/7/85/e478e4b26af74f4539c79f31fde80jpeg.jpeg", add_time=DateTime.Now.AddDays(-3),click=12,title="啊手动阀", zhaiyao="123",market_price=3000, sell_price=2900, stock_quantity=12,goods_no="220003434260" },
+                new Goods(){id=30,subid=30, img_url="http://fuss10.elemecdn.com/b/df/b630636b444346e38cef6c59f6457jpeg.jpeg", add_time=DateTime.Now.AddDays(-4),click=12,title="阿道夫", zhaiyao="美食，顾名思义就是美味的食物，贵的有山珍海味，便宜的有街边小吃。其实美食是不分贵贱的，只要是自己喜欢的，都可以称之为美食。中国素有“烹饪王国”这个美誉。在中国这个大家庭里，我们有五十六个小家庭，每个家庭都有自己的特色美食。美食吃前有期待、吃后有回味，已不仅仅是简单的味觉感受，更是一种精神享受。享受美食也要看场合，场合好美食吃起来才有味道。世界各地美食文化博大精深，营养物质各不相同，品味更多美食，享受更多健康，也让人吃的更加开心。美食不仅仅是餐桌上的食物。还包括休闲零食、各种饼干、糕点、糖类，蜜饯、干果、肉制食品、茶饮冲泡等制品，各有各的风味，都可称之为美食。",market_price=3000, sell_price=2900, stock_quantity=12,goods_no="550003434260" },
+                new Goods(){id=5,subid=5, img_url="http://fuss10.elemecdn.com/7/a5/596ab03934612236f807b92906fd8jpeg.jpeg", add_time=DateTime.Now.AddDays(-5),click=12,title="啊手动阀", zhaiyao="123",market_price=3000, sell_price=2900, stock_quantity=12,goods_no="122003434260" },
+                new Goods(){id=6,subid=6, img_url="https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3207781657,3460758070&fm=26&gp=0.jpg", add_time=DateTime.Now.AddDays(-6),click=12,title="爱的色放撒旦", zhaiyao="12321",market_price=3000, sell_price=2900, stock_quantity=12,goods_no="333303434260" },
+                new Goods(){id=7,subid=7, img_url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1555588770027&di=bf94f5254006955a220806fd24ec270a&imgtype=0&src=http%3A%2F%2Fimg.bimg.126.net%2Fphoto%2FWgjcTIco7s4BN2OcRNAe_A%3D%3D%2F884675851802636535.jpg", add_time=DateTime.Now.AddDays(-1),click=12,title="阿斯蒂芬撒", zhaiyao="1231",market_price=3000, sell_price=2900, stock_quantity=12,goods_no="342003434260" },
                 new Goods(){id=8,subid=8, img_url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1555588770027&di=a86f5450c47faac25e3f79a6e039033c&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg", add_time=DateTime.Now.AddDays(-1),click=12,title="阿3额 ", zhaiyao="123",market_price=3000, sell_price=2900, stock_quantity=12 },
                 new Goods(){id=9,subid=9,img_url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1555588770026&di=5475c3713ad5a2df0556fbbda6e0aff2&imgtype=0&src=http%3A%2F%2Fimg01.cztv.com%2F201611%2F20%2F84eae5bf1e03cc04222d40aaa2389e99.gif", add_time=DateTime.Now.AddDays(-1),click=12,title="啊手动阀", zhaiyao="123",market_price=3000, sell_price=2900, stock_quantity=12 },
                 new Goods(){id=10,subid=10,img_url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1555588770026&di=e0fa9d0094dcb199a3d9d9c06d083856&imgtype=0&src=http%3A%2F%2Fimgs.abduzeedo.com%2Ffiles%2Ftutorials%2Fnine_making_of%2F2.jpg", add_time=DateTime.Now.AddDays(-1),click=12,title="Asher", zhaiyao="1231",market_price=3000, sell_price=2900, stock_quantity=12 },
